@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mineworks</title>
+  <link rel="stylesheet" href="css.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --ore: #b77b33;
+      --rust: #c94c24;
+    }
+
+    body {
+      background: 
+        linear-gradient(to bottom, rgba(35, 45, 65, 0.55), rgba(15, 15, 30, 0.7)),
+        url('background.jpg') center center;
+      background-attachment: fixed;
+      background-size: cover;
+      background-repeat: no-repeat;
+      color: white;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .hero-header {
+      text-align: center;
+      padding: 4rem 1.5rem 3rem;
+      margin: 0 auto;
+      max-width: 900px;
+    }
+    .hero-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3.1rem;
+      color: var(--ore);
+      text-shadow: 0 0 12px rgba(183, 123, 51, 0.7), 0 2px 6px rgba(0,0,0,0.8);
+      letter-spacing: 2.5px;
+      margin-bottom: 0.6rem;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(183, 123, 51, 0.6), 0 2px 6px rgba(0,0,0,0.8); }
+      to   { text-shadow: 0 0 20px rgba(183, 123, 51, 0.9), 0 2px 8px rgba(0,0,0,0.9); }
+    }
+    .hero-header h2 {
+  	font-family: 'Roboto', sans-serif;
+ 	font-size: clamp(1.2rem, 4vw, 1.55rem); /* Адаптивный размер */
+	color: var(--rust);
+	text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+	max-width: 90vw; /* Занимает 90% ширины экрана */
+	margin: 0 auto 1.2rem;
+	line-height: 1.3;
+	word-wrap: break-word;
+}
+    }
+    .hero-header p {
+      max-width: 580px;
+      margin: 0 auto;
+      color: #e6e6e6;
+      font-size: 1.15rem;
+    }
+
+    main, footer {
+      position: relative;
+      z-index: 2;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1.2rem;
+    }
+
+    .company-card-wrapper {
+      margin-bottom: 0.8rem;
+    }
+    .company-card-label {
+      display: flex;
+      align-items: center;
+      background: var(--panel);
+      padding: 0.9rem 1.2rem;
+      border: 1px solid var(--light-iron);
+      color: #ddd;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .company-card-label:hover {
+      border-color: var(--rust);
+    }
+    .company-card-label input[type="checkbox"] {
+      margin-right: 1rem;
+      transform: scale(1.2);
+    }
+    .company-card-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.15rem;
+    }
+
+    .compare-actions {
+      text-align: center;
+      margin: 1.8rem 0;
+    }
+    .compare-companies-btn {
+      display: block;
+      margin: 1.8rem auto 0;
+      padding: 0.75rem 2rem;
+      background: var(--panel);
+      color: #4caf50;
+      border: 1px solid #4caf50;
+      border-radius: 0;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .compare-companies-btn:hover {
+      background: #2e3e2f;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .hero-header h1 { font-size: 2.3rem; }
+      .hero-header h2 { font-size: 1.3rem; }
+      .hero-header p { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-header">
+    <h1>MineWorks</h1>
+    <h2>Карьерный путь горного инженера начинается здесь</h2>
+      </div>
+
+  <main class="main">
+    <section class="search-section">
+      <div class="container">
+        <h2>Найти компанию по названию</h2>
+        <input type="text" id="search" placeholder="Например: Полюс, СУЭК, Норникель" />
+        <button onclick="searchCompany()">Найти</button>
+      </div>
+    </section>
+
+    <section class="filters-section">
+      <div class="container">
+        <h2>Фильтр по отрасли и льготам</h2>
+
+        <div class="filter-row">
+          <div class="filter-col">
+            <h3><i class="fas fa-industry icon-industry"></i> Отрасль</h3>
+            <div class="filters" id="industry-filters">
+              <button class="filter-btn active" data-filter="all">Все</button>
+              <button class="filter-btn" data-filter="gold">Золото</button>
+              <button class="filter-btn" data-filter="coal">Уголь</button>
+              <button class="filter-btn" data-filter="diamonds">Алмазы</button>
+              <button class="filter-btn" data-filter="oil">Нефть/Газ</button>
+              <button class="filter-btn" data-filter="blasting">Взрывные работы</button>
+            </div>
+          </div>
+
+          <div class="filter-col">
+            <h3><i class="fas fa-heart icon-benefit"></i> Социальный пакет</h3>
+            <div class="filters" id="benefit-filters">
+              <label><input type="checkbox" data-benefit="dms"> ДМС</label>
+              <label><input type="checkbox" data-benefit="housing"> Жильё / компенсация аренды</label>
+              <label><input type="checkbox" data-benefit="transport"> Проезд / вахтовый транспорт</label>
+              <label><input type="checkbox" data-benefit="food"> Бесплатное питание</label>
+              <label><input type="checkbox" data-benefit="relocation"> Подъёмные / переезд</label>
+              <label><input type="checkbox" data-benefit="bonus"> Премии / бонусы</label>
+              <label><input type="checkbox" data-benefit="uniform"> Спецодежда</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-separator"></div>
+
+        <div class="filter-row">
+          <div class="filter-col">
+            <h3><i class="fas fa-map-marker-alt icon-region"></i> Регион</h3>
+            <div class="filters" id="region-filters">
+              <label><input type="checkbox" data-region="all" checked> Все регионы</label>
+              <label><input type="checkbox" data-region="sakha"> Якутия</label>
+              <label><input type="checkbox" data-region="kemerovo"> Кузбасс</label>
+              <label><input type="checkbox" data-region="murmansk"> Мурманская обл.</label>
+              <label><input type="checkbox" data-region="irkutsk"> Иркутская обл.</label>
+              <label><input type="checkbox" data-region="sakhalin"> Сахалин</label>
+              <label><input type="checkbox" data-region="magadan"> Магаданская обл.</label>
+            </div>
+          </div>
+
+          <div class="filter-col">
+            <h3><i class="fas fa-user-check icon-requirement"></i> Требования к кандидату</h3>
+            <div class="filters" id="requirement-filters">
+              <label><input type="checkbox" data-req="no-experience-ok"> Можно без опыта</label>
+              <label><input type="checkbox" data-req="internship"> Стажировки для студентов</label>
+              <label><input type="checkbox" data-req="degree"> Высшее образование</label>
+              <label><input type="checkbox" data-req="experience"> Опыт работы</label>
+              <label><input type="checkbox" data-req="medbook"> Медкнижка</label>
+              <label><input type="checkbox" data-req="driver"> Водительские права</label>
+              <label><input type="checkbox" data-req="english"> Английский язык</label>
+              <label><input type="checkbox" data-req="shift"> Вахтовый метод</label>
+            </div>
+          </div>
+        </div>
+
+        <button id="reset-filters" class="reset-btn">Сбросить все фильтры</button>
+
+        <div class="companies-grid" id="filtered-companies"></div>
+
+        <div class="compare-actions">
+          <button id="compare-btn" class="compare-companies-btn">
+            Сравнить выбранные компании
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 Работа в горной промышленности. Информация собрана из открытых источников.</p>
+    </div>
+  </footer>
+
+  <!-- Боковая панель -->
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h2>Mineworks Platform</h2>
+      <span class="close-btn" id="close-sidebar">&times;</span>
+    </div>
+    <div class="sidebar-content">
+      <p>Платформа для поиска информации о социальных льготах и условиях трудоустройства в горнодобывающей промышленности.</p>
+      <h3>Как пользоваться?</h3>
+      <ul>
+        <li>Выберите отрасль (золото, уголь и др.)</li>
+        <li>Отметьте нужные льготы</li>
+        <li>Уточните регион и требования</li>
+        <li>Получите список подходящих компаний</li>
+        <li>Выберите 2–4 и нажмите «Сравнить»</li>
+      </ul>
+      <h3>Полезные ссылки</h3>
+      <ul>
+        <li><a href="#">Часто задаваемые вопросы</a></li>
+        <li><a href="#">Добавить компанию</a></li>
+        <li><a href="#">Обратная связь</a></li>
+      </ul>
+      <p class="sidebar-footer">&copy; 2025 Горная промышленность<br></p>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay"></div>
+  <button id="open-sidebar" class="open-sidebar-btn">
+    <i class="fas fa-cog"></i>
+  </button>
+
+  <script src="script.js"></script>
+</body>
+</html>

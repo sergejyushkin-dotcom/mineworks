@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Информация о компании</title>
+  <!-- Шрифты -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* === ПОЛНОСТЬЮ САМОДОСТАТОЧНЫЙ СТИЛЬ === */
+    :root {
+      --coal: #262626;
+      --iron: #3a3a3a;
+      --rust: #c94c24;
+      --ore: #b77b33;
+      --light-iron: #525252;
+      --panel: #1e1e1e;
+      --text: #f0f0f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--coal);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .company-page {
+      max-width: 820px;
+      margin: 2.2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ШАПКА — ВСЕГДА ТЁМНАЯ */
+    .company-header {
+      background: var(--panel);
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 1.5rem 1rem;
+      border-bottom: 2px solid var(--rust);
+      color: white;
+    }
+
+    .company-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--ore); /* ФИКСИРОВАННЫЙ ЦВЕТ — НЕ company-accent! */
+      font-size: 2.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    #industry-label {
+      color: #aaa;
+      font-size: 1.1rem;
+    }
+
+    .company-description {
+      background: var(--panel);
+      padding: 1.3rem;
+      margin: 1.6rem 0;
+      border: 1px solid var(--light-iron);
+      border-radius: 0;
+      line-height: 1.65;
+      color: #ddd;
+    }
+
+    /* КНОПКА ЛЬГОТ — ВСЕГДА КОНТРАСТНАЯ */
+    .benefits-toggle-btn {
+      background: var(--rust); /* ВСЕГДА ОДИН ЦВЕТ */
+      color: white;
+      border: none;
+      padding: 0.8rem 1.8rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border-radius: 0;
+      margin: 1.5rem 0;
+      transition: background 0.2s;
+    }
+    .benefits-toggle-btn:hover {
+      background: var(--ore); /* ВСЕГДА один hover-цвет */
+    }
+
+    /* СПИСОК ЛЬГОТ */
+    .benefits-list {
+      background: var(--panel);
+      padding: 0;
+      border: 1px solid var(--light-iron);
+      border-radius: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+    }
+    .benefits-list.show {
+      max-height: 400px;
+      opacity: 1;
+      padding: 1.6rem;
+    }
+    .benefits-list ul {
+      padding-left: 1.4rem;
+    }
+    .benefits-list li {
+      margin-bottom: 0.7rem;
+      line-height: 1.5;
+      color: #ddd;
+    }
+
+    /* ССЫЛКА "НАЗАД" — ФИКСИРОВАННЫЙ ЦВЕТ */
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      color: var(--ore); /* Не зависит от компании! */
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container company-page">
+    <div class="company-header">
+      <h1 id="company-name">Загрузка...</h1>
+      <p id="industry-label">Отрасль: ...</p>
+    </div>
+
+    <div id="company-description" class="company-description"></div>
+
+    <button class="benefits-toggle-btn" id="benefits-toggle">
+      Показать предоставляемые льготы и условия
+    </button>
+
+    <div class="benefits-list" id="benefits-list">
+      <ul id="benefits-ul"></ul>
+    </div>
+
+    <a href="index.html" class="back-link">← Вернуться к списку компаний</a>
+  </div>
+
+  <script>
+    const companiesData = [
+      {
+        name: "Полюс",
+        slug: "polyus",
+        industry: "Золотодобыча",
+        description: "Крупнейший производитель золота в России и один из лидеров мировой золотодобывающей отрасли. Штаб-квартира — Москва. Основан в 1995 году.",
+        benefits: ["ДМС", "Корпоративное жильё или компенсация аренды", "Вахтовый транспорт", "Бесплатное питание", "Подъёмные при переезде", "Премии и бонусы"]
+      },
+      {
+        name: "СУЭК",
+        slug: "suek",
+        industry: "Уголь",
+        description: "Сибирская угольная энергетическая компания — крупнейший производитель угля в России. Экспорт в более чем 40 стран. Основана в 2001 году.",
+        benefits: ["ДМС", "Проезд на вахту и обратно", "Бесплатное питание", "Премии и KPI", "Спецодежда и СИЗ"]
+      },
+      {
+        name: "АЛРОСА",
+        slug: "alrosa",
+        industry: "Алмазы",
+        description: "Ведущий в мире производитель алмазов. Штаб-квартира — город Мирный (Республика Саха). Компания активно поддерживает социальную инфраструктуру в регионах присутствия.",
+        benefits: ["ДМС для сотрудников и семьи", "Жильё для вахтовиков", "Проезд за счёт компании", "Компенсация детского сада", "Бесплатное питание", "Подъёмные"]
+      },
+      {
+        name: "Норникель",
+        slug: "nornickel",
+        industry: "Цветные металлы, платина",
+        description: "Крупнейший в мире производитель палладия и никеля. Работает в Норильске, Красноярском крае и на Кольском полуострове.",
+        benefits: ["ДМС", "Жильё или компенсация аренды", "Проезд на Север", "Питание на производстве", "Северные надбавки", "Годовые премии"]
+      },
+      {
+        name: "Колмар",
+        slug: "kolmar",
+        industry: "Уголь",
+        description: "Один из крупнейших экспортеров угля из Якутии. Разрабатывает Эльгинское месторождение — одно из самых мощных в мире.",
+        benefits: ["ДМС", "Жильё вахтовикам", "Вахтовый транспорт", "Питание", "Подъёмные при переезде"]
+      },
+      {
+        name: "Мечел",
+        slug: "mechel",
+        industry: "Уголь, металлургия",
+        description: "Один из крупнейших российских горно-металлургических компаний. Добывает коксующийся уголь и производит сталь.",
+        benefits: ["ДМС", "Проезд на вахту", "Бесплатное питание", "Спецодежда", "Обучение на производстве"]
+      },
+      {
+        name: "УГМК",
+        slug: "ugmk",
+        industry: "Медь, уголь, золото",
+        description: "Уральская горно-металлургическая компания — один из лидеров в добыче меди и золота.",
+        benefits: ["ДМС", "Корпоративное жильё", "Проезд", "Питание", "Подъёмные", "Премии по итогам года"]
+      },
+      {
+        name: "Еврохим — ВРК",
+        slug: "eurochem-vrk",
+        industry: "Взрывные работы",
+        description: "Лидер в сфере промышленных взрывных работ в России.",
+        benefits: ["ДМС", "Проезд на объект", "Питание", "Спецодежда", "Обучение работе с ВМД"]
+      },
+      {
+        name: "Якутский алмазный комплекс",
+        slug: "yakutalmaz",
+        industry: "Алмазы",
+        description: "Добывает алмазы в Республике Саха (Якутия).",
+        benefits: ["ДМС", "Жильё", "Проезд", "Северные надбавки", "Бесплатное питание"]
+      },
+      {
+        name: "Славнефть",
+        slug: "slavneft",
+        industry: "Нефть и газ",
+        description: "Нефтедобывающая компания, дочерняя структура «Роснефти» и «Газпром нефти».",
+        benefits: ["ДМС", "Жильё или компенсация", "Проезд", "Питание", "Премии"]
+      },
+      {
+        name: "Геодинамика",
+        slug: "geodinamika",
+        industry: "Взрывные работы",
+        description: "Специализируется на промышленных взрывных работах, геофизических исследованиях и бурении.",
+        benefits: ["ДМС", "Проезд на объект", "Спецодежда", "Стажировки для студентов", "Обучение"]
+      },
+      {
+        name: "Сибантрацит",
+        slug: "sibanthracite",
+        industry: "Уголь",
+        description: "Один из крупнейших производителей антрацита в мире. Экспорт в Европу и Азию.",
+        benefits: ["ДМС", "Проезд на вахту", "Бесплатное питание", "Спецодежда"]
+      }
+    ];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('name');
+
+    const nameEl = document.getElementById('company-name');
+    const industryEl = document.getElementById('industry-label');
+    const descEl = document.getElementById('company-description');
+    const toggleBtn = document.getElementById('benefits-toggle');
+    const benefitsList = document.getElementById('benefits-list');
+    const benefitsUl = document.getElementById('benefits-ul');
+
+    if (slug) {
+      const company = companiesData.find(c => c.slug === slug);
+      if (company) {
+        nameEl.textContent = company.name;
+        industryEl.textContent = `Отрасль: ${company.industry}`;
+        descEl.innerHTML = `<p>${company.description}</p>`;
+        benefitsUl.innerHTML = company.benefits.map(b => `<li>${b}</li>`).join('');
+      } else {
+        nameEl.textContent = "Компания не найдена";
+        industryEl.style.display = 'none';
+        descEl.innerHTML = '<p style="color:#777;">Информация временно недоступна.</p>';
+        toggleBtn.style.display = 'none';
+        benefitsList.classList.add('show');
+        benefitsList.innerHTML = '<p style="color:#777;text-align:center;padding:1.6rem;">Данные о льготах отсутствуют.</p>';
+      }
+    } else {
+      nameEl.textContent = "Ошибка";
+      industryEl.style.display = 'none';
+      descEl.innerHTML = '<p style="color:#777;">Не указано название компании.</p>';
+      toggleBtn.style.display = 'none';
+      benefitsList.classList.add('show');
+      benefitsList.innerHTML = '<p style="color:#777;text-align:center;padding:1.6rem;">Добавьте параметр ?name=...</p>';
+    }
+
+    // Логика кнопки
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        benefitsList.classList.toggle('show');
+        toggleBtn.textContent = benefitsList.classList.contains('show')
+          ? 'Скрыть льготы'
+          : 'Показать предоставляемые льготы и условия';
+      });
+    }
+  </script>
+</body>
+</html>

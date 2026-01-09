@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Сравнение компаний — MineWorks</title>
+  <link rel="stylesheet" href="css.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: var(--coal);
+      color: #f0f0f0;
+      line-height: 1.6;
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.2rem;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--ore);
+      text-align: center;
+      margin: 1.5rem 0;
+      font-size: 2.2rem;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: var(--ore);
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      margin-top: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    th, td {
+      padding: 1rem;
+      border: 1px solid var(--light-iron);
+      text-align: center;
+      vertical-align: top;
+    }
+    th:first-child, td:first-child {
+      text-align: left;
+      font-weight: bold;
+      background: rgba(255,255,255,0.05);
+      position: sticky;
+      left: 0;
+    }
+    .yes { color: #4caf50; font-weight: bold; }
+    .no { color: #f44336; }
+    .section-header {
+      background: var(--rust);
+      color: white;
+      text-align: center !important;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead tr { display: none; }
+      tr {
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--light-iron);
+        padding: 1rem;
+        background: var(--panel);
+      }
+      td {
+        text-align: right;
+        padding-left: 50% !important;
+        position: relative;
+        border: none !important;
+      }
+      td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+        color: var(--ore);
+      }
+      td:first-child::before {
+        content: "Компания";
+        color: var(--rust);
+      }
+      .section-header {
+        display: block !important;
+        margin-top: 1.5rem;
+        padding: 0.8rem !important;
+        text-align: center !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Вернуться к поиску</a>
+    <h1>Сравнение компаний</h1>
+    <div id="comparison-table"></div>
+  </div>
+
+  <script>
+    const companies = [
+      {
+        name: "Полюс",
+        slug: "polyus",
+        industry: "Золото",
+        regions: ["sakha", "kemerovo"],
+        benefits: ["dms", "housing", "transport", "food", "relocation", "bonus"],
+        requirements: ["degree", "experience", "medbook", "no-experience-ok", "internship"]
+      },
+      {
+        name: "СУЭК",
+        slug: "suek",
+        industry: "Уголь",
+        regions: ["kemerovo", "irkutsk", "sakhalin"],
+        benefits: ["dms", "transport", "food", "bonus", "uniform"],
+        requirements: ["medbook", "shift", "no-experience-ok"]
+      },
+      {
+        name: "АЛРОСА",
+        slug: "alrosa",
+        industry: "Алмазы",
+        regions: ["sakha", "arkhangelsk"],
+        benefits: ["dms", "housing", "transport", "relocation", "food", "childcare"],
+        requirements: ["degree", "experience", "medbook", "no-experience-ok", "internship"]
+      },
+      {
+        name: "Норникель",
+        slug: "nornickel",
+        industry: "Цветные металлы, платина",
+        regions: ["murmansk", "krasnoyarsk"],
+        benefits: ["dms", "housing", "transport", "food", "relocation", "bonus", "northern"],
+        requirements: ["degree", "experience", "medbook", "shift", "english"]
+      },
+      {
+        name: "Мечел",
+        slug: "mechel",
+        industry: "Уголь, металлургия",
+        regions: ["kemerovo", "buryatia"],
+        benefits: ["dms", "transport", "food", "uniform"],
+        requirements: ["medbook", "shift", "no-experience-ok"]
+      },
+      {
+        name: "УГМК",
+        slug: "ugmk",
+        industry: "Медь, уголь, золото",
+        regions: ["sverdlovsk", "buryatia"],
+        benefits: ["dms", "housing", "transport", "food", "relocation", "bonus"],
+        requirements: ["degree", "experience", "medbook", "no-experience-ok"]
+      },
+      {
+        name: "Колмар",
+        slug: "kolmar",
+        industry: "Уголь",
+        regions: ["sakha"],
+        benefits: ["dms", "housing", "transport", "food", "relocation"],
+        requirements: ["medbook", "shift", "no-experience-ok", "driver"]
+      },
+      {
+        name: "Еврохим — ВРК",
+        slug: "eurochem-vrk",
+        industry: "Взрывные работы",
+        regions: ["belgorod", "kemerovo"],
+        benefits: ["dms", "transport", "food", "uniform"],
+        requirements: ["medbook", "shift", "driver", "no-experience-ok"]
+      },
+      {
+        name: "Якутский алмазный комплекс",
+        slug: "yakutalmaz",
+        industry: "Алмазы",
+        regions: ["sakha"],
+        benefits: ["dms", "housing", "transport", "northern", "food"],
+        requirements: ["medbook", "shift", "no-experience-ok"]
+      },
+      {
+        name: "Славнефть",
+        slug: "slavneft",
+        industry: "Нефть и газ",
+        regions: ["khanty", "omsk"],
+        benefits: ["dms", "housing", "transport", "food", "bonus"],
+        requirements: ["degree", "experience", "medbook", "driver"]
+      },
+      {
+        name: "Геодинамика",
+        slug: "geodinamika",
+        industry: "Взрывные работы",
+        regions: ["moscow", "kemerovo", "sakha"],
+        benefits: ["dms", "transport", "uniform", "training"],
+        requirements: ["medbook", "shift", "driver", "no-experience-ok", "internship"]
+      },
+      {
+        name: "Сибантрацит",
+        slug: "sibanthracite",
+        industry: "Уголь",
+        regions: ["novosibirsk", "kemerovo"],
+        benefits: ["dms", "transport", "food", "uniform"],
+        requirements: ["medbook", "shift", "no-experience-ok"]
+      }
+    ];
+
+    const regionMap = {
+      sakha: "Якутия",
+      kemerovo: "Кузбасс",
+      murmansk: "Мурманская обл.",
+      irkutsk: "Иркутская обл.",
+      sakhalin: "Сахалин",
+      magadan: "Магаданская обл.",
+      novosibirsk: "Новосибирская обл.",
+      belgorod: "Белгородская обл.",
+      krasnoyarsk: "Красноярский край",
+      sverdlovsk: "Свердловская обл.",
+      buryatia: "Бурятия",
+      khanty: "ХМАО",
+      omsk: "Омская обл.",
+      moscow: "Москва",
+      arkhangelsk: "Архангельская обл."
+    };
+
+    function generateComparisonTable() {
+      const data = localStorage.getItem('companiesToCompare');
+      if (!data) {
+        document.getElementById('comparison-table').innerHTML = '<p style="text-align:center;color:#aaa;">Нет данных. Вернитесь к поиску и выберите компании.</p>';
+        return;
+      }
+
+      const selected = JSON.parse(data);
+      if (selected.length < 2) {
+        document.getElementById('comparison-table').innerHTML = '<p style="text-align:center;color:#aaa;">Выберите минимум 2 компании на главной странице.</p>';
+        return;
+      }
+
+      const allBenefits = ['dms', 'housing', 'transport', 'food', 'relocation', 'bonus', 'uniform', 'childcare', 'training', 'northern'];
+      const benefitLabels = {
+        'dms': 'ДМС',
+        'housing': 'Жильё / компенсация',
+        'transport': 'Проезд / вахта',
+        'food': 'Питание',
+        'relocation': 'Подъёмные',
+        'bonus': 'Премии',
+        'uniform': 'Спецодежда',
+        'childcare': 'Детский сад',
+        'training': 'Обучение',
+        'northern': 'Северные надбавки'
+      };
+
+      const allRequirements = ['no-experience-ok', 'internship', 'degree', 'experience', 'medbook', 'driver', 'english', 'shift'];
+      const reqLabels = {
+        'no-experience-ok': 'Можно без опыта',
+        'internship': 'Стажировки',
+        'degree': 'Высшее образование',
+        'experience': 'Опыт работы',
+        'medbook': 'Медкнижка',
+        'driver': 'Водительские права',
+        'english': 'Английский язык',
+        'shift': 'Вахтовый метод'
+      };
+
+      let html = '<table><thead><tr><th>Параметр</th>';
+      selected.forEach(comp => {
+        html += `<th>${comp.name}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+
+      html += `<tr><td>Отрасль</td>`;
+      selected.forEach(comp => html += `<td>${comp.industry}</td>`);
+      html += `</tr>`;
+
+      html += `<tr><td>Регионы</td>`;
+      selected.forEach(comp => {
+        const regions = comp.regions.map(r => regionMap[r] || r).join(', ');
+        html += `<td>${regions}</td>`;
+      });
+      html += `</tr>`;
+
+      html += `<tr><td colspan="${selected.length + 1}" class="section-header">Социальный пакет</td></tr>`;
+      allBenefits.forEach(key => {
+        html += `<tr><td>${benefitLabels[key]}</td>`;
+        selected.forEach(comp => {
+          const has = comp.benefits.includes(key);
+          html += `<td class="${has ? 'yes' : 'no'}" data-label="${benefitLabels[key]}">${has ? '✓' : '—'}</td>`;
+        });
+        html += `</tr>`;
+      });
+
+      html += `<tr><td colspan="${selected.length + 1}" class="section-header">Требования к кандидату</td></tr>`;
+      allRequirements.forEach(key => {
+        html += `<tr><td>${reqLabels[key]}</td>`;
+        selected.forEach(comp => {
+          const has = comp.requirements.includes(key);
+          html += `<td class="${has ? 'yes' : 'no'}" data-label="${reqLabels[key]}">${has ? '✓' : '—'}</td>`;
+        });
+        html += `</tr>`;
+      });
+
+      html += '</tbody></table>';
+      document.getElementById('comparison-table').innerHTML = html;
+    }
+
+    generateComparisonTable();
+  </script>
+</body>
+</html>
