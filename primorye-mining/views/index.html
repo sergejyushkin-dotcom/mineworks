@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Приморский Горный Вестник</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a3a52 0%, #2c5268 100%);
+      padding: 2rem;
+    }
+    
+    .hero-content {
+      text-align: center;
+      color: white;
+      max-width: 800px;
+    }
+    
+    .hero-icon {
+      font-size: 6rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero-title {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.5rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+    
+    .hero-description {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      opacity: 0.8;
+      margin-bottom: 3rem;
+    }
+    
+    .hero-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .hero-feature {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .hero-feature__icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .hero-feature__text {
+      font-size: 0.95rem;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn--large {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.2rem;
+      }
+      
+      .hero-icon {
+        font-size: 4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-icon">🏔️</div>
+      <h1 class="hero-title">Приморский Горный Вестник</h1>
+      <p class="hero-subtitle">Платформа коммуникации предприятий горной промышленности Приморского края</p>
+      
+      <div class="hero-features">
+        <div class="hero-feature">
+          <div class="hero-feature__icon">🔓</div>
+          <div class="hero-feature__text">Вход без пароля<br>по защищенной ссылке</div>
+        </div>
+        <div class="hero-feature">
+          <div class="hero-feature__icon">📨</div>
+          <div class="hero-feature__text">Централизованные рассылки<br>по отраслям</div>
+        </div>
+        <div class="hero-feature">
+          <div class="hero-feature__icon">📄</div>
+          <div class="hero-feature__text">Электронные документы<br>с QR-кодом</div>
+        </div>
+        <div class="hero-feature">
+          <div class="hero-feature__icon">📱</div>
+          <div class="hero-feature__text">Адаптивный дизайн<br>для мобильных</div>
+        </div>
+      </div>
+      
+      <p class="hero-description">
+        Социальный проект для упрощения документооборота и оповещений между регулятором 
+        и предприятиями угольной, нефтяной и газовой промышленности.
+      </p>
+      
+      <div class="hero-buttons">
+        <a href="/login" class="btn btn--primary btn--large">
+          Войти в систему
+        </a>
+        <a href="#about" class="btn btn--secondary btn--large">
+          Узнать больше
+        </a>
+      </div>
+      
+      <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2);">
+        <p style="font-size: 0.9rem; opacity: 0.7;">
+          «Платформа для связи с горняками Приморья,<br>где не нужно помнить пароль, а нужно просто быть в списке»
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

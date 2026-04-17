@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Приморский Горный Вестник - Вход</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a3a52 0%, #2c5268 100%);
+      padding: 2rem;
+    }
+    
+    .login-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      padding: 3rem;
+      width: 100%;
+      max-width: 450px;
+    }
+    
+    .login-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .login-logo__icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .login-logo__title {
+      font-size: 1.75rem;
+      color: #1a3a52;
+      margin-bottom: 0.5rem;
+    }
+    
+    .login-logo__subtitle {
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+    
+    .login-form__group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .login-form__label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #1a3a52;
+    }
+    
+    .login-form__input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .login-form__input:focus {
+      outline: none;
+      border-color: #d4a017;
+      box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.1);
+    }
+    
+    .login-form__help {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-top: 0.5rem;
+    }
+    
+    .login-form__submit {
+      width: 100%;
+      padding: 1rem;
+      background: #d4a017;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .login-form__submit:hover {
+      background: #c49010;
+    }
+    
+    .login-form__submit:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .login-message {
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .login-message--success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .login-message--error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .login-info {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+    
+    .login-info__item {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo__icon">🏔️</div>
+        <h1 class="login-logo__title">Приморский Горный Вестник</h1>
+        <p class="login-logo__subtitle">Платформа для связи с горняками Приморья</p>
+      </div>
+      
+      <div id="message" class="login-message" style="display: none;"></div>
+      
+      <form class="login-form" id="loginForm">
+        <div class="login-form__group">
+          <label class="login-form__label" for="email">
+            Корпоративный email
+          </label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            class="login-form__input" 
+            placeholder="ivanov@primcoal.ru"
+            required
+          >
+          <p class="login-form__help">
+            Введите email вашего предприятия. Если домен зарегистрирован в системе, мы отправим ссылку для входа.
+          </p>
+        </div>
+        
+        <button type="submit" class="login-form__submit" id="submitBtn">
+          Получить ссылку для входа
+        </button>
+      </form>
+      
+      <div class="login-info">
+        <div class="login-info__item">
+          🔒 Вход без пароля по защищенной ссылке
+        </div>
+        <div class="login-info__item">
+          ⏱️ Ссылка действует 15 минут
+        </div>
+        <div class="login-info__item">
+          📅 Сессия сохраняется на 30 дней
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const messageDiv = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    function showMessage(text, type) {
+      messageDiv.textContent = text;
+      messageDiv.className = `login-message login-message--${type}`;
+      messageDiv.style.display = 'block';
+    }
+    
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value.trim();
+      
+      if (!email) {
+        showMessage('Введите корректный email', 'error');
+        return;
+      }
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправка...';
+      
+      try {
+        const response = await fetch('/api/auth/request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showMessage(
+            '✓ Ссылка для входа отправлена на ' + email + '. Проверьте почту.',
+            'success'
+          );
+          loginForm.reset();
+        } else {
+          showMessage(data.error || 'Ошибка при отправке ссылки', 'error');
+        }
+      } catch (error) {
+        showMessage('Ошибка соединения с сервером', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Получить ссылку для входа';
+      }
+    });
+  </script>
+</body>
+</html>

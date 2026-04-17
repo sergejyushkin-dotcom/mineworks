@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Приморский Горный Вестник - Личный кабинет</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <!-- Шапка -->
+  <header class="header">
+    <div class="header__logo">
+      <span class="header__logo-icon">🏔️</span>
+      <div>
+        <h1 class="header__title">Приморский Горный Вестник</h1>
+        <p class="header__subtitle">Платформа коммуникации предприятий горной промышленности</p>
+      </div>
+    </div>
+    <div class="header__user">
+      <div class="header__user-info">
+        <div class="header__user-name" id="userName">Загрузка...</div>
+        <div class="header__user-company" id="userCompany"></div>
+      </div>
+      <button class="btn btn--secondary" onclick="logout()">Выход</button>
+    </div>
+  </header>
+
+  <!-- Основной контент -->
+  <div class="container">
+    <div style="display: flex; gap: 2rem;">
+      <!-- Левая колонка - Документы -->
+      <main style="flex: 1;">
+        <!-- Вкладки -->
+        <div class="tabs">
+          <button class="tab tab--active" data-category="document">
+            📄 Входящие документы
+          </button>
+          <button class="tab" data-category="event">
+            📅 Приглашения на мероприятия
+          </button>
+          <button class="tab" data-category="alert">
+            ⚠️ Важные оповещения
+          </button>
+        </div>
+
+        <!-- Список документов -->
+        <div class="card">
+          <div class="card__header">
+            <h2 class="card__title" id="currentTabTitle">Входящие документы</h2>
+          </div>
+          <div class="document-list" id="documentList">
+            <!-- Документы будут загружены через JS -->
+            <div style="text-align: center; padding: 2rem; color: #6b7280;">
+              Загрузка документов...
+            </div>
+          </div>
+        </div>
+
+        <!-- Форма создания рассылки (только для админов) -->
+        <div class="card" id="adminCard" style="display: none;">
+          <div class="card__header">
+            <h2 class="card__title">📢 Создать рассылку</h2>
+          </div>
+          <form id="broadcastForm">
+            <div class="form-group">
+              <label class="form-label">Тема объявления *</label>
+              <input type="text" class="form-input" id="broadcastTitle" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Текст сообщения *</label>
+              <textarea class="form-textarea" id="broadcastContent" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Важность</label>
+              <select class="form-select" id="broadcastImportance">
+                <option value="normal">Обычная</option>
+                <option value="urgent">Срочная</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Прикрепить файл (до 50 Мб)</label>
+              <input type="file" class="form-input" id="broadcastFile">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Получатели</label>
+              <div class="checkbox-group">
+                <label class="checkbox-tag checkbox-tag--coal">
+                  <input type="checkbox" name="sphere" value="coal">
+                  ⚫ Угольная промышленность
+                </label>
+                <label class="checkbox-tag checkbox-tag--oil_gas">
+                  <input type="checkbox" name="sphere" value="oil_gas">
+                  🟡 Нефтегазовый сектор
+                </label>
+                <label class="checkbox-tag checkbox-tag--service">
+                  <input type="checkbox" name="sphere" value="service">
+                  ⚪ Геологоразведка
+                </label>
+              </div>
+            </div>
+
+            <div class="broadcast-preview" id="broadcastPreview" style="display: none;">
+              <p class="broadcast-preview__text">
+                Будет отправлено: <span class="broadcast-preview__count" id="previewCount">0</span> компаний,
+                <span id="previewExcluded">0</span> исключено
+              </p>
+            </div>
+
+            <div class="mt-2">
+              <button type="submit" class="btn btn--primary">
+                📨 Отправить рассылку
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+
+      <!-- Правая колонка - Сайдбар -->
+      <aside class="sidebar">
+        <!-- Виджет: Предприятия на связи -->
+        <div class="widget">
+          <h3 class="widget__title">🏭 Предприятия на связи</h3>
+          <ul class="company-list" id="companyList">
+            <!-- Компании будут загружены через JS -->
+          </ul>
+        </div>
+
+        <!-- Виджет: Статистика -->
+        <div class="widget">
+          <h3 class="widget__title">📊 Статистика</h3>
+          <div id="statsWidget">
+            <div style="margin-bottom: 0.75rem;">
+              <strong>Всего компаний:</strong> <span id="statCompanies">-</span>
+            </div>
+            <div style="margin-bottom: 0.75rem;">
+              <strong>Уголь:</strong> <span id="statCoal">-</span>
+            </div>
+            <div style="margin-bottom: 0.75rem;">
+              <strong>Нефть и газ:</strong> <span id="statOilGas">-</span>
+            </div>
+            <div>
+              <strong>Геологоразведка:</strong> <span id="statService">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Виджет: Информация -->
+        <div class="widget">
+          <h3 class="widget__title">ℹ️ Информация</h3>
+          <p style="font-size: 0.9rem; color: #6b7280; line-height: 1.5;">
+            Платформа для связи с горняками Приморья, где не нужно помнить пароль, а нужно просто быть в списке.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    let currentUser = null;
+    let currentCategory = 'document';
+
+    // Проверка аутентификации
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/status');
+        const data = await response.json();
+
+        if (!data.authenticated) {
+          window.location.href = '/login';
+          return;
+        }
+
+        currentUser = data.user;
+        document.getElementById('userName').textContent = data.user.fullName;
+        document.getElementById('userCompany').textContent = data.user.company.name;
+
+        // Показать форму админа если руководитель
+        if (data.user.role === 'director') {
+          document.getElementById('adminCard').style.display = 'block';
+        }
+
+        loadDocuments(currentCategory);
+        loadCompanies();
+        loadStats();
+      } catch (error) {
+        console.error('Auth check error:', error);
+        window.location.href = '/login';
+      }
+    }
+
+    // Загрузка документов
+    async function loadDocuments(category) {
+      const listEl = document.getElementById('documentList');
+      listEl.innerHTML = '<div style="text-align: center; padding: 2rem; color: #6b7280;">Загрузка...</div>';
+
+      try {
+        const response = await fetch(`/api/documents?category=${category}`);
+        const data = await response.json();
+
+        if (data.documents && data.documents.length > 0) {
+          listEl.innerHTML = data.documents.map(doc => `
+            <div class="document-item document-item--${doc.importance === 'urgent' ? 'urgent' : doc.category}">
+              <div class="document-item__icon">
+                ${getCategoryIcon(doc.category)}
+              </div>
+              <div class="document-item__content">
+                <div class="document-item__title">
+                  ${escapeHtml(doc.title)}
+                  ${doc.importance === 'urgent' ? '<span class="document-item__badge">СРОЧНО</span>' : ''}
+                </div>
+                <div class="document-item__meta">
+                  ${new Date(doc.createdAt).toLocaleDateString('ru-RU', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </div>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          listEl.innerHTML = '<div style="text-align: center; padding: 2rem; color: #6b7280;">Нет документов в этой категории</div>';
+        }
+      } catch (error) {
+        console.error('Load documents error:', error);
+        listEl.innerHTML = '<div style="text-align: center; padding: 2rem; color: #dc3545;">Ошибка загрузки документов</div>';
+      }
+    }
+
+    // Загрузка компаний
+    async function loadCompanies() {
+      try {
+        const response = await fetch('/api/companies');
+        const companies = await response.json();
+
+        const listEl = document.getElementById('companyList');
+        if (companies && companies.length > 0) {
+          listEl.innerHTML = companies.slice(0, 10).map(company => `
+            <li class="company-list__item">
+              <div class="company-list__icon">${getSphereIcon(company.sphere)}</div>
+              <div>
+                <div class="company-list__name">${escapeHtml(company.name)}</div>
+                <div class="company-list__sphere">${getSphereLabel(company.sphere)}</div>
+              </div>
+            </li>
+          `).join('');
+        } else {
+          listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #6b7280;">Нет данных</li>';
+        }
+      } catch (error) {
+        console.error('Load companies error:', error);
+      }
+    }
+
+    // Загрузка статистики
+    async function loadStats() {
+      try {
+        const response = await fetch('/api/companies/stats');
+        const stats = await response.json();
+
+        document.getElementById('statCompanies').textContent = stats.totalCompanies || 0;
+        document.getElementById('statCoal').textContent = stats.bySphere?.coal || 0;
+        document.getElementById('statOilGas').textContent = stats.bySphere?.oil_gas || 0;
+        document.getElementById('statService').textContent = stats.bySphere?.service || 0;
+      } catch (error) {
+        console.error('Load stats error:', error);
+      }
+    }
+
+    // Обновление превью рассылки
+    async function updateBroadcastPreview() {
+      const checkboxes = document.querySelectorAll('input[name="sphere"]:checked');
+      const spheres = Array.from(checkboxes).map(cb => cb.value);
+
+      const previewEl = document.getElementById('broadcastPreview');
+
+      if (spheres.length === 0) {
+        previewEl.style.display = 'none';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/documents/preview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sphereFilter: spheres })
+        });
+
+        const data = await response.json();
+        document.getElementById('previewCount').textContent = data.willSend;
+        document.getElementById('previewExcluded').textContent = data.excluded;
+        previewEl.style.display = 'block';
+      } catch (error) {
+        console.error('Preview error:', error);
+      }
+    }
+
+    // Отправка формы рассылки
+    document.getElementById('broadcastForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('broadcastTitle').value;
+      const content = document.getElementById('broadcastContent').value;
+      const importance = document.getElementById('broadcastImportance').value;
+      const fileInput = document.getElementById('broadcastFile');
+      const checkboxes = document.querySelectorAll('input[name="sphere"]:checked');
+      const spheres = Array.from(checkboxes).map(cb => cb.value);
+
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('content', content);
+      formData.append('importance', importance);
+      formData.append('category', currentCategory);
+      if (spheres.length > 0) {
+        formData.append('sphereFilter', JSON.stringify(spheres));
+      }
+      if (fileInput.files[0]) {
+        formData.append('file', fileInput.files[0]);
+      }
+
+      try {
+        const response = await fetch('/api/documents', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Рассылка создана и добавлена в очередь!');
+          document.getElementById('broadcastForm').reset();
+          document.getElementById('broadcastPreview').style.display = 'none';
+          loadDocuments(currentCategory);
+        } else {
+          alert(data.error || 'Ошибка создания рассылки');
+        }
+      } catch (error) {
+        console.error('Create broadcast error:', error);
+        alert('Ошибка соединения с сервером');
+      }
+    });
+
+    // Обработчики вкладок
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
+        tab.classList.add('tab--active');
+        currentCategory = tab.dataset.category;
+        document.getElementById('currentTabTitle').textContent = tab.textContent.trim();
+        loadDocuments(currentCategory);
+      });
+    });
+
+    // Обработчики чекбоксов для превью
+    document.querySelectorAll('input[name="sphere"]').forEach(cb => {
+      cb.addEventListener('change', updateBroadcastPreview);
+    });
+
+    // Выход
+    async function logout() {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login';
+    }
+
+    // Утилиты
+    function getCategoryIcon(category) {
+      const icons = {
+        document: '📄',
+        event: '📅',
+        alert: '⚠️'
+      };
+      return icons[category] || '📄';
+    }
+
+    function getSphereIcon(sphere) {
+      const icons = {
+        coal: '⚫',
+        oil_gas: '🟡',
+        service: '⚪'
+      };
+      return icons[sphere] || '🏭';
+    }
+
+    function getSphereLabel(sphere) {
+      const labels = {
+        coal: 'Угольная промышленность',
+        oil_gas: 'Нефтегазовый сектор',
+        service: 'Геологоразведка'
+      };
+      return labels[sphere] || sphere;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Инициализация
+    checkAuth();
+  </script>
+</body>
+</html>
